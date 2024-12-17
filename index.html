@@ -1,0 +1,371 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="./vue.js"></script>
+    <title>抽奖</title>
+    <link rel="icon" href="./favicon.ico" type="image/x-icon">
+    <style>
+        @font-face {
+            font-family: 'MyCustomFont';
+            src: url('./SourceHanSansOLD-Heavy-2.otf') format('woff2');
+            font-weight: normal;
+            font-style: normal;
+        }
+        @font-face {
+            font-family: 'deyi';
+            src: url('./SmileySans-Oblique-2.ttf') format('woff2');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        body {
+            font-family: 'MyCustomFont', Arial, sans-serif;
+            margin: 0; /* 去除默认外边距 */
+        }
+
+        .background {
+            width: 100%;
+            height: 100vh;
+            background: linear-gradient(135deg, #A41D2C, #7A1621);
+            overflow: hidden;
+            position: relative;
+            /* 添加弹性布局 */
+            display: flex;
+            flex-direction: column;
+        }
+
+        .title {
+            width: 100%;
+            text-align: center;
+            color: #D69B65;
+            font-size: 100px;
+            text-shadow: 0px 0px 1px rgba(0, 0, 0, 0.5);
+            padding-top: 20px;
+            letter-spacing: 7px;
+        }
+
+        /* 左右灯笼的公共样式 */
+        .lantern {
+            position: fixed;
+            top: 0;
+            width: 50px;
+            height: auto;
+            animation: swing 3s infinite ease-in-out; /* 摆动动画 */
+            transform-origin: top center; /* 设置摆动的中心点 */
+        }
+
+        /* 左侧灯笼 */
+        .lantern-left {
+            left: 11px;
+        }
+
+        /* 右侧灯笼 */
+        .lantern-right {
+            right: 11px;
+        }
+
+        /* 图片样式 */
+        .lantern img {
+            position: absolute;
+            width: 52px;
+            height: auto;
+        }
+
+        .lantern .image2 {
+            top: 15px;
+            left: 10px;
+            z-index: 1;
+        }
+
+        /* 摆动动画 */
+        @keyframes swing {
+            0% { transform: rotate(0deg); }
+            25% { transform: rotate(5deg); }
+            50% { transform: rotate(0deg); }
+            75% { transform: rotate(-5deg); }
+            100% { transform: rotate(0deg); }
+        }
+
+        /* 右下角图片 */
+        .corner-image {
+            position: fixed;
+            right: 0;
+            bottom: 0;
+            width: 150px;
+            height: auto;
+        }
+
+        /*抽奖显示名字*/
+        .name {
+            font-family: 'deyi', Arial, sans-serif !important;
+            font-size: 110px;
+            margin: 0;
+            /* 添加以下属性使其垂直居中 */
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color:#FFF9C4;
+            font-weight: bold;
+
+
+        }
+
+        /*抽奖按钮*/
+        .button-group button {
+            font-size: 20px;
+            margin: 10px;
+            padding: 10px 20px;
+            border: none;
+            color: white;
+            background-color: #E64A19;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .button-group{
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .button-group button:hover {
+            background-color: #BF360C;
+        }
+        /* 保证背景图片位于左半边 */
+        .background .drgon {
+            position: fixed;
+            left: 0; /* 让图片始终固定在左侧 */
+            top: 0; /* 让图片从页面顶部开始 */
+            /*width: 50%; !* 图片宽度占屏幕的一半 *!*/
+            height: 100vh; /* 图片的高度覆盖整个视口高度 */
+            object-fit: cover; /* 确保图片按比例填充区域 */
+            /*z-index: -1; !* 确保图片位于其他元素的下方 *!*/
+        }
+        /* 新的按钮样式 */
+        .button-group button {
+            position: relative;
+            font-family: 'MyCustomFont', Arial, sans-serif;
+            font-size: 20px;
+            margin: 0 15px;
+            padding: 15px 30px;
+            background: linear-gradient(to bottom, #FFD700, #FFA500);
+            border: 2px solid #8B4513;
+            border-radius: 12px;
+            color: #8B0000;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .button-group button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+            background: linear-gradient(to bottom, #FFE44D, #FFB84D);
+        }
+
+        .button-group button:active {
+            transform: translateY(1px);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        /* 按钮内数字样式 */
+        .button-group button span {
+            font-weight: bold;
+            color: #8B0000;
+        }
+
+        /* 按钮光效 */
+        .button-group button::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                    to bottom right,
+                    rgba(255, 255, 255, 0) 0%,
+                    rgba(255, 255, 255, 0.1) 50%,
+                    rgba(255, 255, 255, 0) 100%
+            );
+            transform: rotate(45deg);
+            transition: all 0.5s;
+            opacity: 0;
+        }
+
+        .button-group button:hover::after {
+            opacity: 1;
+            transform: rotate(45deg) translate(50%, 50%);
+        }
+
+        /* 禁用状态样式 */
+        .button-group button:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .ball {
+            position: fixed;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 10;
+            opacity: 0.06;
+        }
+    </style>
+</head>
+<body>
+<div id="app"  class="background">
+    <div class="title">
+        2024年会幸运大抽奖
+    </div>
+<!--    <img src="./3.svg" class="ball">-->
+
+    <img  class="drgon" src="./drgon.webp" >
+
+    <!-- 左侧灯笼组合 -->
+    <div class="lantern lantern-left">
+        <img src="./2.png" alt="灯笼底部" class="image1">
+        <img src="./3.png" alt="灯笼顶部" class="image2">
+    </div>
+
+    <!-- 右侧灯笼组合 -->
+    <div class="lantern lantern-right">
+        <img src="./2.png" alt="灯笼底部" class="image1">
+        <img src="./3.png" alt="灯笼顶部" class="image2">
+    </div>
+
+    <!-- 右下角图片 -->
+    <img src="./1.webp" alt="图片" class="corner-image">
+
+    <!-- 动态显示名字 -->
+    <div class="name">{{ currentName }}</div>
+
+    <!-- 奖项按钮 -->
+    <div class="button-group">
+        <button @click="toggleRoll(1)" :disabled="remainingCounts[1] === 0">
+            {{ isRolling && currentLevel === 1 ? '停止' : '抽取一等奖' }} (<span>{{remainingCounts[1]}}</span>)
+
+        </button>
+        <button @click="toggleRoll(2)" :disabled="remainingCounts[2] === 0">
+            {{ isRolling && currentLevel === 2 ? '停止' : '抽取二等奖' }} (<span>{{remainingCounts[2]}}</span>)
+        </button>
+        <button @click="toggleRoll(3)" :disabled="remainingCounts[3] === 0">
+            {{ isRolling && currentLevel === 3 ? '停止' : '抽取三等奖' }} (<span>{{remainingCounts[3]}}</span>)
+        </button>
+    </div>
+</div>
+
+<script>
+    new Vue({
+        el: '#app',
+        data: {
+            names: ['王展鹏', '苗诗涛', '杜坤', '葛定志', '陈  辉', '吴昊旻', '李晨', '匡俊杰','叶文静', '陆云燕', '宰莉敏'],
+            currentName: '',
+            timer: null,
+            isRolling: false,
+            // 各奖项配置
+            prizeConfig: {
+                1: { total: 1, name: '一等奖' },
+                2: { total: 3, name: '二等奖' },
+                3: { total: 5, name: '三等奖' }
+            },
+            // 剩余数量
+            remainingCounts: {
+                1: 1,
+                2: 3,
+                3: 5
+            },
+            // 中奖记录
+            winners: {
+                1: [],
+                2: [],
+                3: []
+            }
+        },
+        methods: {
+            // 初始化数据
+            initializeData() {
+                const savedWinners = localStorage.getItem('lottery_winners');
+                if (savedWinners) {
+                    this.winners = JSON.parse(savedWinners);
+
+                    // 更新剩余数量
+                    Object.keys(this.prizeConfig).forEach(level => {
+                        this.remainingCounts[level] = this.prizeConfig[level].total - this.winners[level].length;
+                    });
+
+                    // 从待抽奖名单中移除已中奖的人
+                    const allWinners = Object.values(this.winners).flat();
+                    this.names = this.names.filter(name => !allWinners.includes(name));
+                } else {
+                    // 初始化默认值
+                    this.winners = {
+                        1: [],
+                        2: [],
+                        3: []
+                    };
+                    Object.keys(this.prizeConfig).forEach(level => {
+                        this.remainingCounts[level] = this.prizeConfig[level].total;
+                    });
+                    this.saveWinners();
+                }
+            },
+
+            // 保存中奖记录
+            saveWinners() {
+                localStorage.setItem('lottery_winners', JSON.stringify(this.winners));
+            },
+
+            // 开始抽奖
+            toggleRoll(level) {
+                if (this.remainingCounts[level] === 0) return;
+
+                if (!this.isRolling) {
+                    // Start rolling
+                    this.isRolling = true;
+                    this.currentLevel = level;
+                    this.timer = setInterval(() => {
+                        const randomIndex = Math.floor(Math.random() * this.names.length);
+                        this.currentName = this.names[randomIndex];
+                    }, 50);
+                } else if (this.currentLevel === level) {
+                    // Stop rolling
+                    clearInterval(this.timer);
+                    this.isRolling = false;
+
+                    // Get the current displayed name as winner
+                    const winner = this.currentName;
+
+                    // Update winners and remaining counts
+                    this.winners[level].push(winner);
+                    this.saveWinners();
+                    this.names = this.names.filter(name => name !== winner);
+                    this.remainingCounts[level]--;
+
+                    // Show winner alert
+                    // alert(`恭喜 ${winner} 获得${this.prizeConfig[level].name}！`);
+                    this.currentLevel = null;
+                }
+            },
+            // 清除所有中奖记录（用于测试）
+            clearAllWinners() {
+                localStorage.removeItem('lottery_winners');
+                location.reload();
+            }
+        },
+        mounted() {
+            this.currentName = '李四闪';
+            this.initializeData();
+        }
+    });
+</script>
+</body>
+</html>
+
+
+
