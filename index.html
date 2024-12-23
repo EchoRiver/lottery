@@ -5,245 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="./vue.js"></script>
     <title>年会抽奖</title>
-    <style>
-        @keyframes gradientBG {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        @keyframes floating {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-20px); }
-            100% { transform: translateY(0px); }
-        }
-
-        @keyframes shining {
-            0% { text-shadow: 0 0 10px #FFD700, 0 0 20px #FFD700, 0 0 30px #FFD700; }
-            50% { text-shadow: 0 0 20px #FFA500, 0 0 30px #FFA500, 0 0 40px #FFA500; }
-            100% { text-shadow: 0 0 10px #FFD700, 0 0 20px #FFD700, 0 0 30px #FFD700; }
-        }
-
-        @keyframes confetti-fall {
-            0% { transform: translateY(-100%) rotate(0deg); }
-            100% { transform: translateY(100vh) rotate(360deg); }
-        }
-
-        @keyframes coin-drop {
-            0% { transform: translateY(-100vh) rotate(0deg); }
-            100% { transform: translateY(100vh) rotate(720deg); }
-        }
-
-        @keyframes winner-zoom {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.2); }
-            100% { transform: scale(1); }
-        }
-
-        body {
-            margin: 0;
-            font-family: 'MyCustomFont', Arial, sans-serif;
-        }
-
-        .background {
-            width: 100%;
-            height: 100vh;
-            background: linear-gradient(-45deg, #A41D2C, #7A1621, #8B0000, #800000);
-            background-size: 400% 400%;
-            animation: gradientBG 15s ease infinite;
-            overflow: hidden;
-            position: relative;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .title {
-            width: 100%;
-            text-align: center;
-            color: #D69B65;
-            font-size: 119px;
-            text-shadow: 0px 0px 1px rgba(0, 0, 0, 0.5);
-            padding-top: 20px;
-            letter-spacing: 7px;
-            font-weight: bold;
-        }
-
-        .name {
-            font-family: 'deyi', Arial, sans-serif;
-            font-size: 100px;
-            flex: 1;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            color: #FFF9C4;
-            font-weight: bold;
-            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
-            transition: all 0.3s ease;
-            animation: floating 3s ease-in-out infinite;
-        }
-
-        .name.rolling {
-            animation: none;
-            transform: scale(1.1);
-        }
-
-        .button-group {
-            text-align: center;
-            margin-bottom: 30px;
-            z-index: 1;
-        }
-
-        .button-group button {
-            position: relative;
-            font-family: 'MyCustomFont', Arial, sans-serif;
-            font-size: 20px;
-            margin: 0 15px;
-            padding: 15px 30px;
-            background: linear-gradient(to bottom, #FFD700, #FFA500);
-            border: 2px solid #8B4513;
-            border-radius: 12px;
-            color: #8B0000;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            overflow: hidden;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-        }
-
-        .button-group button:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
-        }
-
-        .button-group button:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        .celebration-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 1;
-        }
-
-        .confetti {
-            position: absolute;
-            width: 10px;
-            height: 10px;
-            background-color: #FFD700;
-            clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
-        }
-
-        .coin {
-            position: absolute;
-            width: 30px;
-            height: 30px;
-            background-color: #FFD700;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            color: #8B0000;
-            box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
-        }
-
-        .firework {
-            position: absolute;
-            width: 4px;
-            height: 4px;
-            border-radius: 50%;
-        }
-
-        @keyframes firework {
-            0% { transform: scale(1); opacity: 1; }
-            100% {
-                transform: scale(50);
-                opacity: 0;
-            }
-        }
-
-        .light-beam {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle at center, rgba(255, 215, 0, 0.2) 0%, transparent 70%);
-            opacity: 0;
-            transition: opacity 0.5s;
-        }
-
-        .light-beam.active {
-            opacity: 1;
-        }
-
-
-
-        /* 保证背景图片位于左半边 */
-        .background .drgon {
-            position: fixed;
-            left: 0; /* 让图片始终固定在左侧 */
-            top: 0; /* 让图片从页面顶部开始 */
-            /*width: 50%; !* 图片宽度占屏幕的一半 *!*/
-            height: 100vh; /* 图片的高度覆盖整个视口高度 */
-            object-fit: cover; /* 确保图片按比例填充区域 */
-            /*z-index: -1; !* 确保图片位于其他元素的下方 *!*/
-        }
-        /* 右下角图片 */
-        .corner-image {
-            position: fixed;
-            right: 0;
-            bottom: 0;
-            width: 150px;
-            height: auto;
-        }
-
-        /* 左右灯笼的公共样式 */
-        .lantern {
-            position: fixed;
-            top: 0;
-            width: 50px;
-            height: auto;
-            animation: swing 3s infinite ease-in-out; /* 摆动动画 */
-            transform-origin: top center; /* 设置摆动的中心点 */
-        }
-
-        /* 左侧灯笼 */
-        .lantern-left {
-            left: 11px;
-        }
-
-        /* 右侧灯笼 */
-        .lantern-right {
-            right: 29px;
-        }
-
-        /* 图片样式 */
-        .lantern img {
-            position: absolute;
-            width: 71px;
-            height: auto;
-        }
-
-        .lantern .image2 {
-            top: 15px;
-            left: 10px;
-        }
-        /* 摆动动画 */
-        @keyframes swing {
-            0% { transform: rotate(0deg); }
-            25% { transform: rotate(5deg); }
-            50% { transform: rotate(0deg); }
-            75% { transform: rotate(-5deg); }
-            100% { transform: rotate(0deg); }
-        }
-        .button-group button{
-            width: 196px;
-        }
-    </style>
+    <link rel="stylesheet" href="./lottery.css">
 </head>
 <body>
 <div id="app" class="background">
@@ -263,20 +25,62 @@
         <img src="./3.png" alt="灯笼顶部" class="image2">
     </div>
 
+    <div class="winner-panel" :class="{ flash: showFlash }">
+        <div class="winner-panel-title">中奖名单</div>
+
+        <!-- 一等奖 -->
+        <div class="prize-category first-prize">
+            <div class="prize-header">
+                <div class="prize-icon"></div>
+                <span>一等奖</span>
+            </div>
+            <div v-for="(winner, index) in winners[1]" :key="'1-' + index" class="winner-name">
+                {{ typeof winner === 'object' ? winner.name : winner }}
+            </div>
+        </div>
+
+        <!-- 二等奖 -->
+        <div class="prize-category second-prize">
+            <div class="prize-header">
+                <div class="prize-icon"></div>
+                <span>二等奖</span>
+            </div>
+            <div v-for="(winner, index) in winners[2]" :key="'2-' + index" class="winner-name">
+                {{ typeof winner === 'object' ? winner.name : winner }}
+            </div>
+        </div>
+
+        <!-- 三等奖 -->
+        <div class="prize-category third-prize">
+            <div class="prize-header">
+                <div class="prize-icon"></div>
+                <span>三等奖</span>
+            </div>
+            <div v-for="(winner, index) in winners[3]" :key="'3-' + index" class="winner-name">
+                {{ typeof winner === 'object' ? winner.name : winner }}
+            </div>
+        </div>
+
+        <div class="winner-panel-overlay">
+            <div class="overlay-top"></div>
+            <div class="overlay-bottom"></div>
+        </div>
+    </div>
+
     <!-- 右下角图片 -->
-    <img src="./1.webp" alt="图片" class="corner-image" @click="clearWinners" >
+    <img src="./1.webp" alt="图片" class="corner-image"  style="opacity: 0.1;" >
 
     <div class="name" :class="{ rolling: isRolling, winner: showCelebration }">{{ currentName }}</div>
     <div class="celebration-container" v-if="showCelebration"></div>
 
     <div class="button-group">
-        <button @click="toggleRoll(1)" :disabled="remainingCounts[1] === 0">
+        <button @click="toggleRoll(1)" :disabled="remainingCounts[1] === 0 || !canDraw(1)">
             {{ remainingCounts[1] === 0 ? '抽奖结束' :( isRolling && currentLevel === 1 ? '停止' : '抽取一等奖' ) }} ({{ remainingCounts[1] }})
         </button>
-        <button @click="toggleRoll(2)" :disabled="remainingCounts[2] === 0">
+        <button @click="toggleRoll(2)" :disabled="remainingCounts[2] === 0 || !canDraw(2)">
             {{ remainingCounts[2] === 0 ? '抽奖结束' :( isRolling && currentLevel === 2 ? '停止' : '抽取二等奖' ) }} ({{ remainingCounts[2] }})
         </button>
-        <button @click="toggleRoll(3)" :disabled="remainingCounts[3] === 0">
+        <button @click="toggleRoll(3)" :disabled="remainingCounts[3] === 0 || !canDraw(3)">
             {{ remainingCounts[3] === 0 ? '抽奖结束' :( isRolling && currentLevel === 3 ? '停止' : '抽取三等奖' ) }} ({{ remainingCounts[3] }})
         </button>
     </div>
@@ -284,214 +88,18 @@
     <audio id="rollSound"  preload="auto" loop>
         <source src="./1.MP3" type="audio/mpeg">
     </audio>
-    <audio id="winSound">
-        <source src="/api/placeholder/audio" type="audio/mpeg">
-    </audio>
+
+    <div id="help-button">
+        使用说明
+    </div>
+    <div id="help-box">
+        <p>1.按顺序抽取三等奖、二等奖、一等奖。</p>
+        <p>2.每个奖项抽取完毕后，才可继续抽取下一个奖项</p>
+        <p>3.使用<span style="font-weight: bold">ctrl+r </span>快捷键清除所有中奖记录。</p>
+    </div>
+
 </div>
 
-<script>
-    new Vue({
-        el: '#app',
-        data: {
-            names: ['王展鹏', '苗诗涛', '杜坤', '葛定志', '陈辉', '吴昊旻', '李晨', '匡俊杰', '叶文静', '陆云燕', '宰莉敏'],
-            currentName: '',
-            timer: null,
-            isRolling: false,
-            showCelebration: false,
-            rollSound: null,
-            winSound: null,
-            prizeConfig: {
-                1: { total: 1, name: '一等奖' },
-                2: { total: 3, name: '二等奖' },
-                3: { total: 5, name: '三等奖' }
-            },
-            remainingCounts: {
-                1: 1,
-                2: 3,
-                3: 5
-            },
-            winners: {
-                1: [],
-                2: [],
-                3: []
-            },
-            currentLevel: null,
-            rollInterval: 50,
-            celebrationTimer: null
-        },
-        methods: {
-            initializeData() {
-                const savedWinners = localStorage.getItem('lottery_winners');
-                if (savedWinners) {
-                    this.winners = JSON.parse(savedWinners);
-                    Object.keys(this.prizeConfig).forEach(level => {
-                        this.remainingCounts[level] = this.prizeConfig[level].total - this.winners[level].length;
-                    });
-                    const allWinners = Object.values(this.winners).flat();
-                    this.names = this.names.filter(name => !allWinners.includes(name));
-                }
-                this.rollSound = document.getElementById('rollSound');
-                this.winSound = document.getElementById('winSound');
-            },
-
-            toggleRoll(level) {
-                if (this.remainingCounts[level] === 0) return;
-
-                if (!this.isRolling) {
-                    this.startRolling(level);
-                } else if (this.currentLevel === level) {
-                    this.stopRolling(level);
-                }
-            },
-
-            startRolling(level) {
-                this.isRolling = true;
-                this.currentLevel = level;
-                this.rollSound.play();
-
-                let speed = this.rollInterval;
-                let acceleration = 1.0;
-
-                const roll = () => {
-                    const randomIndex = Math.floor(Math.random() * this.names.length);
-                    this.currentName = this.names[randomIndex];
-                    speed *= acceleration;
-
-                    this.timer = setTimeout(roll, speed);
-                };
-
-                roll();
-            },
-
-            stopRolling(level) {
-                clearTimeout(this.timer);
-                this.isRolling = false;
-                this.rollSound.pause();
-                this.rollSound.currentTime = 0;
-
-                const winner = this.currentName;
-                const prize = this.prizeConfig[level].name;
-                this.winners[level].push(winner);
-                this.saveWinners();
-                this.names = this.names.filter(name => name !== winner);
-                this.remainingCounts[level]--;
-
-                this.showCelebration = true;
-                this.winSound.play();
-                this.startCelebration();
-
-                // 播报中奖人和奖项
-                this.announceWinner(winner, prize);
-
-                setTimeout(() => {
-                    this.showCelebration = false;
-                }, 3000);
-
-                this.currentLevel = null;
-            },
-            // 新增方法：获取可用的语音并选择一个
-            getAvailableVoices() {
-                const voices = window.speechSynthesis.getVoices();
-                // 这里可以根据需求选择语音，如选一个中文男声
-                const chineseMaleVoice = voices.find(voice => voice.lang === 'zh-CN' && voice.name.includes('Xiaoxiao')); // 例如：选择中文的“晓晓”女声
-                return chineseMaleVoice || voices[0]; // 默认使用第一个语音
-            },
-            // 新增一个方法用于播报中奖信息
-            announceWinner(winner, prize) {
-                const utterance = new SpeechSynthesisUtterance(`恭喜${winner}中了${prize}`);
-                utterance.lang = 'zh-CN'; // 设置语言为中文
-                utterance.volume = 1; // 设置音量，范围0到1
-                utterance.rate = 1; // 设置语速，范围0.1到10
-                utterance.pitch = 1; // 设置语调，范围0到2
-
-                // 设置语音
-                const voice = this.getAvailableVoices();
-                utterance.voice = voice;
-                // 播放语音
-                window.speechSynthesis.speak(utterance);
-            },
-
-            saveWinners() {
-                localStorage.setItem('lottery_winners', JSON.stringify(this.winners));
-            },
-
-            createConfetti() {
-                const container = document.querySelector('.celebration-container');
-                const confetti = document.createElement('div');
-                confetti.className = 'confetti';
-                confetti.style.left = Math.random() * 100 + 'vw';
-                confetti.style.backgroundColor = ['#FFD700', '#FFA500', '#FF69B4', '#00FF00'][Math.floor(Math.random() * 4)];
-                confetti.style.animation = `confetti-fall ${2 + Math.random() * 3}s linear`;
-                container.appendChild(confetti);
-                setTimeout(() => confetti.remove(), 5000);
-            },
-
-            createCoin() {
-                const container = document.querySelector('.celebration-container');
-                const coin = document.createElement('div');
-                coin.className = 'coin';
-                coin.textContent = '￥';
-                coin.style.left = Math.random() * 100 + 'vw';
-                coin.style.animation = `coin-drop ${1.5 + Math.random() * 2}s linear`;
-                container.appendChild(coin);
-                setTimeout(() => coin.remove(), 3000);
-            },
-
-            createFirework() {
-                const container = document.querySelector('.celebration-container');
-                const firework = document.createElement('div');
-                firework.className = 'firework';
-                firework.style.left = Math.random() * 100 + 'vw';
-                firework.style.top = Math.random() * 100 + 'vh';
-                firework.style.backgroundColor = ['#FFD700', '#FFA500', '#FF69B4', '#00FF00'][Math.floor(Math.random() * 4)];
-
-                const animation = firework.animate([
-                    { transform: 'scale(1)', opacity: 1 },
-                    { transform: 'scale(50)', opacity: 0 }
-                ], {
-                    duration: 1000,
-                    easing: 'ease-out'
-                });
-
-                container.appendChild(firework);
-                animation.onfinish = () => firework.remove();
-            },
-
-            startCelebration() {
-                // 清除之前的定时器
-                clearInterval(this.celebrationTimer);
-
-                // 创建新的庆祝效果
-                this.celebrationTimer = setInterval(() => {
-                    if (this.showCelebration) {
-                        for (let i = 0; i < 3; i++) {
-                            this.createConfetti();
-                            if (Math.random() > 0.5) this.createCoin();
-                            if (Math.random() > 0.7) this.createFirework();
-                        }
-                    }
-                }, 100);
-
-                // 5秒后停止庆祝效果
-                setTimeout(() => {
-                    clearInterval(this.celebrationTimer);
-                }, 5000);
-            },
-            clearWinners() {
-                localStorage.removeItem('lottery_winners');
-                // 刷新页面
-                location.reload();
-            },
-        },
-        mounted() {
-            this.currentName = '点击按钮开始';
-            this.initializeData();
-
-        },
-        beforeDestroy() {
-            clearInterval(this.celebrationTimer);
-        }
-    });
-</script>
+<script src="./lottery.js"></script>
 </body>
 </html>
