@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="./vue.js"></script>
     <title>年会抽奖</title>
     <link rel="stylesheet" href="./lottery.css">
 </head>
 <body>
 <div id="app" class="background">
     <div class="title">2024年会幸运大抽奖</div>
+    <div class="effects-container"></div>
 
     <img  class="drgon" src="./drgon.webp" >
 
@@ -70,7 +70,7 @@
     <!-- 右下角图片 -->
     <img src="./1.webp" alt="图片" class="corner-image"  style="opacity: 0.1;" >
 
-    <div class="name" :class="{ rolling: isRolling, winner: showCelebration }">{{ currentName }}</div>
+    <div class="name current-name" :class="{ rolling: isRolling, winner: showCelebration }">{{ currentName }}</div>
     <div class="celebration-container" v-if="showCelebration"></div>
 
     <div class="button-group">
@@ -100,6 +100,7 @@
 
 </div>
 
+<script src="./vue.js"></script>
 <script src="./lottery.js"></script>
 </body>
 </html>
